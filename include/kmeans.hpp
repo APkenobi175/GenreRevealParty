@@ -22,7 +22,8 @@ inline void initializeCentroids(std::vector<Point> points, Point *centroids,
 // centroid groups, with size of each group stored in c_amt, and sum
 // of each cluster_group stored for each centroid in c_sum
 inline void partitionClusters(Point centroids[], int c_count, Point points[],
-                              int p_count, Point *c_temp, int *cluster_amt) {
+                              int p_count, Point *c_temp, int *cluster_amt,
+                              bool resetClusters) {
 
   // We assume that c_sum and c_amt are initialized to zeros!
   for (int c = 0; c < c_count; c++) {
@@ -49,10 +50,13 @@ inline void partitionClusters(Point centroids[], int c_count, Point points[],
     }
   }
 
-  // Reset clusters back to zero
-  for (int p_i = 0; p_i < p_count; p_i++) {
-    points[p_i].cluster = -1;
-    points[p_i].minDist = __DBL_MAX__;
+  if (resetClusters) {
+
+    // Reset clusters back to zero
+    for (int p_i = 0; p_i < p_count; p_i++) {
+      points[p_i].cluster = -1;
+      points[p_i].minDist = __DBL_MAX__;
+    }
   }
 }
 

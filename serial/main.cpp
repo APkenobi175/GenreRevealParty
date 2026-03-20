@@ -19,14 +19,14 @@ void kMeansClustering(std::vector<Point> &points) {
   for (int i = 0; i < KMEANS_ITERATIONS; i++) {
     partitionClusters(centroids.data(), CLUSTER_COUNT, &points[0],
                       points.size(), centroid_temps.data(),
-                      points_per_cluster.data());
+                      points_per_cluster.data(), i != (KMEANS_ITERATIONS - 1));
     computeCentroids(centroids.data(), centroid_temps.data(),
                      points_per_cluster.data(), CLUSTER_COUNT);
     // Reset Temporary variables
     centroid_temps.fill(initialize_point(0, 0));
     points_per_cluster.fill(0);
   }
-  writecsv(centroids.data(), CLUSTER_COUNT);
+  writecsv(&points[0], points.size());
 }
 
 int main() {
