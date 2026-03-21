@@ -1,1 +1,4 @@
-data
+data/
+compile_commands.json
+*/build/
+*/output.csv
