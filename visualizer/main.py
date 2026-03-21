@@ -10,11 +10,11 @@ if (len(sys.argv) < 2):
 # After clustering
 plt.figure()
 df = pd.read_csv(sys.argv[1])
-sns.scatterplot(x=df.x, y=df.y, 
+sns.scatterplot(x=df.danceability, y=df.energy, 
                 hue=df.c, 
                 palette=sns.color_palette("hls", n_colors=5))
-plt.xlabel("x")
-plt.ylabel("y")
+plt.xlabel("danceability")
+plt.ylabel("energy")
 plt.title("Clustered: (y) vs (x)")
 
 plt.show()
