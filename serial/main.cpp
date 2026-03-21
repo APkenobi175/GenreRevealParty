@@ -3,6 +3,9 @@
 #include "points.hpp"
 
 #include <array>
+#include <ctime>
+#include <iostream>
+#include <ostream>
 #include <vector>
 
 constexpr int CLUSTER_COUNT = 5;
@@ -14,7 +17,7 @@ void kMeansClustering(std::vector<Point> &points) {
 
   std::array<Point, CLUSTER_COUNT> centroid_temps;
   std::array<int, CLUSTER_COUNT> points_per_cluster;
-  centroid_temps.fill(initialize_point(0, 0));
+  centroid_temps.fill(initialize_point(0, 0, 0, 0, 0, 0, 0, 0));
   points_per_cluster.fill(0);
   for (int i = 0; i < KMEANS_ITERATIONS; i++) {
     partitionClusters(centroids.data(), CLUSTER_COUNT, &points[0],
@@ -23,13 +26,19 @@ void kMeansClustering(std::vector<Point> &points) {
     computeCentroids(centroids.data(), centroid_temps.data(),
                      points_per_cluster.data(), CLUSTER_COUNT);
     // Reset Temporary variables
-    centroid_temps.fill(initialize_point(0, 0));
+    centroid_temps.fill(initialize_point(0, 0, 0, 0, 0, 0, 0, 0));
     points_per_cluster.fill(0);
   }
   writecsv(&points[0], points.size());
 }
 
 int main() {
+  auto start_file_time = std::time(nullptr);
   std::vector<Point> points = readcsv();
+  std::cout << "File Read time (s): " << std::time(nullptr) - start_file_time
+            << std::endl;
+  auto start_kmeans_time = std::time(nullptr);
   kMeansClustering(points);
+  std::cout << "Kmeans clustering & writing time (s): "
+            << std::time(nullptr) - start_kmeans_time << std::endl;
 }

@@ -3,7 +3,6 @@
 
 #include "points.hpp"
 #include <cstdlib>
-#include <stdexcept>
 #include <vector>
 
 // Serial Call, Initializes an array of centroids of size cluster_count
@@ -43,9 +42,6 @@ inline void partitionClusters(Point centroids[], int c_count, Point points[],
           cluster_amt[current_point->cluster]--;
         }
         current_point->cluster = c;
-      }
-      if (c_temp[c].x > 100000000 || c_temp[c].y > 100000000) {
-        throw new std::runtime_error("Uh oh");
       }
     }
   }
