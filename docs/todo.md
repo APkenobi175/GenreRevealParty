@@ -15,10 +15,10 @@ Study serial code, finalize assignments, reuse code where possible. Serial done.
 CPU and CUDA GPU implementations + serial comparisons
 
 - [ ] Parallel shared memory CPU w/ OpenMP *(Eliza)*
-- [ ] Parallel CUDA GPU (no shared memory required) *(Ammon)*
+- [x] Parallel CUDA GPU (no shared memory required) *(Ammon)*
 - [ ] Distributed memory CPU w/ OpenMPI *(Eliza)*
 - [ ] Validate serial vs CPU shared *(Eliza)*
-- [ ] Validate serial vs GPU shared *(Ammon)*
+- [x] Validate serial vs GPU shared *(Ammon)*
 
 ---
 
