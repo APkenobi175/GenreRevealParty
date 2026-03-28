@@ -4,9 +4,9 @@
 
 Study serial code, finalize assignments, reuse code where possible. Serial done.
 
-- [ ] Follow serial tutorial *(All Team)*
-- [ ] study serial code and K-means algorithm *(All Team)*
-- [ ] Implement serial code in C++  *(Dylan)*
+- [x] Follow serial tutorial *(All Team)*
+- [x] study serial code and K-means algorithm *(All Team)*
+- [x] Implement serial code in C++  *(Dylan)*
 
 ---
 
