@@ -1,6 +1,12 @@
 #ifndef POINTS_L_HPP
 #define POINTS_L_HPP
 
+//CUDA compatibility
+#ifndef __CUDACC__
+#define __host__
+#define __device__
+#endif
+
 // WARNING: To Ensure Compatibility with MPI, we need this struct to be plain
 // data So please only use known sized types (or pointers) in this struct
 // see
@@ -12,7 +18,7 @@ struct Point {
   int cluster;    // no default cluster
   double minDist; // default infinite dist to nearest cluster
 
-  double distance_point(const Point *q) {
+  __host__ __device__  double distance_point(const Point *q) {
     double dance_diff = this->danceability - q->danceability;
     double energy_diff = this->energy - q->energy;
     double loudness_diff = this->loudness - q->loudness;
@@ -34,11 +40,11 @@ struct Point {
 
     return std::sqrt(dance_square + energy_square + loudness_square +
                      speechiness_square + acousticness_square +
-                     instrumentalness_square + liveliness_diff +
+                     instrumentalness_square + liveliness_square +
                      valence_square);
   }
 
-  void add_point(const Point *point) {
+  __host__ __device__  void add_point(const Point *point) {
     danceability += point->danceability;
     energy += point->energy;
     loudness += point->loudness;
@@ -49,7 +55,7 @@ struct Point {
     valence += point->valence;
   }
 
-  void sub_point(const Point *point) {
+  __host__ __device__  void sub_point(const Point *point) {
     danceability -= point->danceability;
     energy -= point->energy;
     loudness -= point->loudness;
@@ -60,7 +66,7 @@ struct Point {
     valence -= point->valence;
   }
 
-  void div_point(int divisor) {
+  __host__ __device__  void div_point(int divisor) {
     danceability /= divisor;
     energy /= divisor;
     loudness /= divisor;

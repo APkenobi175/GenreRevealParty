@@ -7,6 +7,7 @@
 #include <iostream>
 #include <ostream>
 #include <vector>
+#include <chrono>
 
 
 // 1. Initialize 5 Clusters and 5 KMeans Iterations
@@ -34,7 +35,7 @@ void kMeansClustering(std::vector<Point> &points) {
     points_per_cluster.fill(0);
   }
   // 5. Write the output to a csv file
-  writecsv(&points[0], points.size());
+  // writecsv(&points[0], points.size());
 }
 
 int main() {
@@ -53,15 +54,24 @@ int main() {
     8. Valence
     */
 
-  // 1. Reads CSV file and store points in the vector
-  auto start_file_time = std::time(nullptr);
+  // 1. Reads CSV file and store points in the vector (ms)
+  auto start_file_time = std::chrono::high_resolution_clock::now();
   std::vector<Point> points = readcsv();
   // 2. Print how long it took to read the file
-  std::cout << "File Read time (s): " << std::time(nullptr) - start_file_time
-            << std::endl;
+  auto end_file_time = std::chrono::high_resolution_clock::now();
+  auto file_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_file_time - start_file_time);
+  std::cout << "File Read time (ms): " << file_duration.count() << std::endl;
   // 3. Perform Kmeans Clustering and time how long it takes, and print the time to the console.
-  auto start_kmeans_time = std::time(nullptr);
+  auto start_kmeans_time = std::chrono::high_resolution_clock::now();
   kMeansClustering(points);
-  std::cout << "Kmeans clustering & writing time (s): "
-            << std::time(nullptr) - start_kmeans_time << std::endl;
+  auto end_kmeans_time = std::chrono::high_resolution_clock::now();
+  auto kmeans_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_kmeans_time - start_kmeans_time);
+  std::cout << "Kmeans clustering time (ms): " << kmeans_duration.count() << std::endl;
+
+
+  auto start_write_time = std::chrono::high_resolution_clock::now();
+  writecsv(&points[0], points.size());
+  auto end_write_time = std::chrono::high_resolution_clock::now();
+  auto write_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_write_time - start_write_time);
+  std::cout << "File write time (ms): " << write_duration.count() << std::endl;
 }
