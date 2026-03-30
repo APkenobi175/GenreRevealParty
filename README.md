@@ -1,24 +1,41 @@
 
 # Instructions for Running Code on Clusters
 
-1. Connect to cluster using SSH:
+1. Navigate to ondemand.chpc.utah.edu
 
-   ```bash
-   ssh username@kingspeak1.chpc.utah.edu
-   ```
+    - You can also use SSH to log in directly from your  terminal, Example:
+      ```bash
+      ssh username@kingspeak1.chpc.utah.edu
+      ```
 
 2. Log into your account and do the 2 factor authentication.
 
-3. Clone the repository to your home directory:
+3. In the top left corner cick ont he `clusters` drop down menu and select a cluster with shell access
+
+    <img src = pictures/image.png>
+
+4. At this point in the process you have 2 options
+    1. Manually copy project files to the cluster
+    2. Use git to clone the repository
+
+5. Clone the repository to your home directory:
 
     ```bash
     git clone git@github.com:APkenobi175/GenreRevealParty.git
     ```
 
-4. Download dataset from [here](https://www.kaggle.com/datasets/rodolfofigueroa/spotify-12m-songs?resource=download)
+5. Download dataset from [here](https://www.kaggle.com/datasets/rodolfofigueroa/spotify-12m-songs?resource=download)
+    - On the dashboard of ondemand.chpc.utah.edu, click on the `files` tab in the top left menu, and select `Home Directory`
+
+    - Navigate to `GenreRevealParty` directory
+
+    - Click on the `New Directory` button and create a new directory called `data`
+
+      <img src = pictures/image2.png>
+
     - Unzip, and move `tracks_features.csv` to the `GenreRevealParty/data` directory.
 
-5. Load the module for your desired implementation (e.g., OpenMP, CUDA, OpenMPI):
+6. Back in the shell, Load the module for your desired implementation (e.g., OpenMP, CUDA, OpenMPI):
     - Examples:
       - For OpenMP:
             `module load openmp`
