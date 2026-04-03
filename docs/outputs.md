@@ -19,7 +19,7 @@ File write time (ms): 6131
 [u6074058@kp297:parallel_cuda]$ ./build/GenreRevealPartyCUDA 
 Reading CSV file...
 /uufs/chpc.utah.edu/common/home/u6074058/GenreRevealParty/parallel_cuda
-Working Directory: File Read time (ms): 9031
+File Read time (ms): 9031
 Starting KMeans Clustering on GPU...
 Allocated GPU memory for points: 96322000 bytes
 Allocated GPU memory for centroids: 400 bytes
@@ -31,6 +31,4 @@ File write time (ms): 6224
 ```
 
 
-
-
-
+- Why does it take so much longer for the parallel cuda to read than the serial? its using the same code......
