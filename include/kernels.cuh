@@ -5,7 +5,7 @@
 
 
 
-__global__ void assignClusters(Point *points, int point_count, Point *centroids, int cluster_count){
+__global__ void assignClustersGPU(Point *points, int point_count, Point *centroids, int cluster_count){
     // This kernal will assign each point to its nearest centroid, and store the assigned cluster in the point's cluster field.
     // Each thread will assign one point
 
@@ -66,7 +66,7 @@ __global__ void accumulateCentroidsGPU(Point *points, int point_count, Point *ce
 
 }
 
-__global__ void computeCentroids(Point *centroids, Point *centroid_temps, int *pointsPerCluster, int cluster_count){
+__global__ void computeCentroidsGPU(Point *centroids, Point *centroid_temps, int *pointsPerCluster, int cluster_count){
 
     // 1 Calculate the cluster ID using formula from class
     int c = blockIdx.x * blockDim.x + threadIdx.x;

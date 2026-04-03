@@ -67,13 +67,13 @@ void kMeansClustering(Point *points, int point_count) {
 
 
         // 1. Launch kernal to assign clusters
-        assignClusters<<<blocks, threads_per_block>>>(d_points, point_count, d_centroids, CLUSTER_COUNT);
+        assignClustersGPU<<<blocks, threads_per_block>>>(d_points, point_count, d_centroids, CLUSTER_COUNT);
         // 2. Wait for GPU to finish before accessing on host
         cudaDeviceSynchronize();
 
         // 3. NEW - Launch kernel to accumulate centroids
 
-        accumulateCentroids<<<blocks, threads_per_block>>>(d_points, point_count, d_centroid_temps, d_points_per_cluster);
+        accumulateCentroidsGPU<<<blocks, threads_per_block>>>(d_points, point_count, d_centroid_temps, d_points_per_cluster);
         cudaDeviceSynchronize();
 
         // 4. NEW - Compute new centroids on GPU
