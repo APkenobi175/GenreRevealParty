@@ -59,7 +59,7 @@ inline void partitionClusters(Point centroids[], int c_count, Point points[],
 // This function requires fully summed centroids and total
 // cluster amounts, so centroid sums must have been calculated
 // already, and cluster sizes must have already been summed
-inline void computeCentroidsGPU(Point *centroids, Point *centroid_temps,
+inline void computeCentroids(Point *centroids, Point *centroid_temps,
                              int *cluster_amt, int centroids_size) {
   for (int c = 0; c < centroids_size; c++) {
     if (cluster_amt[c] > 0) {

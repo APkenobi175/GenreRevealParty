@@ -42,7 +42,7 @@ __global__ void assignClusters(Point *points, int point_count, Point *centroids,
 
 }
 
-__global__ void accumulateCentroids(Point *points, int point_count, Point *centroid_temps, int *pointersPerCluster){
+__global__ void accumulateCentroidsGPU(Point *points, int point_count, Point *centroid_temps, int *pointersPerCluster){
     // Each thread accumulates one point into its cluster's centroid sum
 
     // 1. Calculate the thread ID using formula from class
