@@ -102,10 +102,10 @@ int main(){
     auto start_file_time = std::chrono::high_resolution_clock::now();
     printf("Reading CSV file...\n");
     std::vector<Point> temp = readcsv();
-    printf("Working Directory: ");
+    auto end_file_time = std::chrono::high_resolution_clock::now();
     Point *points = temp.data();
     int point_count = temp.size();
-    auto end_file_time = std::chrono::high_resolution_clock::now();
+    
     auto file_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_file_time - start_file_time);
     printf("File Read time (ms): %ld\n", file_duration.count());
 
