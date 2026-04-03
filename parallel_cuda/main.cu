@@ -103,7 +103,6 @@ int main(){
     printf("Reading CSV file...\n");
     std::vector<Point> temp = readcsv();
     printf("Working Directory: ");
-    system("pwd");
     Point *points = temp.data();
     int point_count = temp.size();
     auto end_file_time = std::chrono::high_resolution_clock::now();
