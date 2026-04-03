@@ -78,7 +78,7 @@ void kMeansClustering(Point *points, int point_count) {
 
         // 4. NEW - Compute new centroids on GPU
 
-        computeCentroids<<<1, CLUSTER_COUNT>>>(d_centroids, d_centroid_temps, d_points_per_cluster, CLUSTER_COUNT);
+        computeCentroidsGPU<<<1, CLUSTER_COUNT>>>(d_centroids, d_centroid_temps, d_points_per_cluster, CLUSTER_COUNT);
         cudaDeviceSynchronize();  
 
     }

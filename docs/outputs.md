@@ -21,3 +21,13 @@ Initialized centroids and copied to GPU
 KMeans Clustering time (ms): 466
 File write time (ms): 6206
 ```
+
+
+```bash
+[u6074058@kp297:serial]$ ./build/GenreRevealPartySerial 
+File Read time (ms): 4428
+Kmeans clustering time (ms): 1456
+File write time (ms): 6131
+```
+
+
