@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.13)
+project(GenreRevealPartyMPI)
+
+set(SOURCE_FILES mainMPI.cpp)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+find_package(MPI REQUIRED)
+find_package(OpenMP REQUIRED)
+add_executable(GenreRevealPartyMPI ${SOURCE_FILES})
+target_link_libraries(GenreRevealPartyMPI PRIVATE MPI::MPI_CXX OpenMP::OpenMP_CXX)
+target_include_directories(GenreRevealPartyMPI PUBLIC "../include")
