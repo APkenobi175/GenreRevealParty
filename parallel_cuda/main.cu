@@ -71,6 +71,11 @@ void kMeansClustering(Point *points, int point_count) {
         // 2. Wait for GPU to finish before accessing on host
         cudaDeviceSynchronize();
 
+        cudaError_t err = cudaGetLastError();
+        if (err != cudaSuccess){
+            printf("assignClusters kernel error: %s\n", cudaGetErrorString(err));
+        }
+
         // 3. NEW - Launch kernel to accumulate centroids
 
         accumulateCentroidsGPU<<<blocks, threads_per_block>>>(d_points, point_count, d_centroid_temps, d_points_per_cluster);
