@@ -4,6 +4,20 @@
 #include "points.hpp"
 
 
+// ADDED 4/10/26 
+// THIS IS A WORKAROUND BECAUSE OLD GPU ARCHITECTURES DO NOT SUPPORT ATOMIC ADD ON DOUBLES
+// SO IT DOESN'T WORK ON GTX TITAN X FOR EXAMPLE
+__global__ void double atomicAddDouble(double *address, double val){
+    unsigned long long int *address_as_ull = (unsigned long long int*) address;
+    unsigned long long int old = *address_as_ull, assumed;
+    do {
+        assumed = old;
+        old = atomicCAS(address_as_ull, assumed, __double_as_longlong(val + __longlong_as_double(assumed))));
+    } while (assumed != old);
+    return __longlong_as_double(old);
+}
+
+
 
 __global__ void assignClustersGPU(Point *points, int point_count, Point *centroids, int cluster_count){
     // This kernal will assign each point to its nearest centroid, and store the assigned cluster in the point's cluster field.
@@ -54,15 +68,15 @@ __global__ void accumulateCentroidsGPU(Point *points, int point_count, Point *ce
     // 2. Accumulate the point's features into the appropriate centroid sum
 
     int c = points[idx].cluster;
-    atomicAdd(&pointersPerCluster[c], 1);
-    atomicAdd(&centroid_temps[c].danceability, points[idx].danceability);
-    atomicAdd(&centroid_temps[c].energy, points[idx].energy);
-    atomicAdd(&centroid_temps[c].loudness, points[idx].loudness);
-    atomicAdd(&centroid_temps[c].speechiness, points[idx].speechiness);
-    atomicAdd(&centroid_temps[c].acousticness, points[idx].acousticness);
-    atomicAdd(&centroid_temps[c].instrumentalness, points[idx].instrumentalness);
-    atomicAdd(&centroid_temps[c].liveliness, points[idx].liveliness);
-    atomicAdd(&centroid_temps[c].valence, points[idx].valence);
+    atomicAddDouble(&pointersPerCluster[c], 1);
+    atomicAddDouble(&centroid_temps[c].danceability, points[idx].danceability);
+    atomicAddDouble(&centroid_temps[c].energy, points[idx].energy);
+    atomicAddDouble(&centroid_temps[c].loudness, points[idx].loudness);
+    atomicAddDouble(&centroid_temps[c].speechiness, points[idx].speechiness);
+    atomicAddDouble(&centroid_temps[c].acousticness, points[idx].acousticness);
+    atomicAddDouble(&centroid_temps[c].instrumentalness, points[idx].instrumentalness);
+    atomicAddDouble(&centroid_temps[c].liveliness, points[idx].liveliness);
+    atomicAddDouble(&centroid_temps[c].valence, points[idx].valence);
 
 }
 
