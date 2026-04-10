@@ -1,34 +1,30 @@
 # Serial
 
-- Total Time: 12 seconds
-- KMeans Clustering Time: 1500ms
-
 ```bash
-[u6074058@kp297:serial]$ ./build/GenreRevealPartySerial 
-File Read time (ms): 4428
-Kmeans clustering time (ms): 1456
-File write time (ms): 6131
+[u6074058@notch001:serial]$ ./build/GenreRevealPartySerial 
+File Read time (ms): 11322
+Kmeans clustering time (ms): 1678
+File write time (ms): 12045
+[u6074058@notch001:serial]$ 
 ```
+
+
 
 # Parallel CUDA
 
-- Total Time: 15.5 seconds
-- KMeans Clustering Time: 298 ms
-
 ```bash
-[u6074058@kp297:parallel_cuda]$ ./build/GenreRevealPartyCUDA 
+[u6074058@notch001:parallel_cuda]$ ./build/GenreRevealPartyCUDA 
 Reading CSV file...
-/uufs/chpc.utah.edu/common/home/u6074058/GenreRevealParty/parallel_cuda
-File Read time (ms): 9031
+File Read time (ms): 18163
 Starting KMeans Clustering on GPU...
 Allocated GPU memory for points: 96322000 bytes
 Allocated GPU memory for centroids: 400 bytes
 Allocated GPU memory for centroid temps: 400 bytes
 Allocated GPU memory for points per cluster: 20 bytes
 Initialized centroids and copied to GPU
-KMeans Clustering time (ms): 298
-File write time (ms): 6224
+KMeans Clustering time (ms): 758
+File write time (ms): 12383
+[u6074058@notch001:parallel_cuda]$ 
 ```
 
 
-- Why does it take so much longer for the parallel cuda to read than the serial? its using the same code......

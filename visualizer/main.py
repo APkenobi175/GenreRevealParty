@@ -58,11 +58,20 @@ def main():
     df_full = pd.read_csv(sys.argv[1])
 
     if choice == 'y':
-        print("Sampling all data...")
-        df = df_full
+        print("ARE YOU SURE? THIS WILL TAKE A LONG TIME TO PLOT! (y/n)")
+        confirm = input().lower()
+        if confirm != 'y':
+            print("Sampling 10000 random rows from the CSV file...")
+            df = df_full.sample(n=10000)
+            filename = "kmeans_clustering_sample.png"
+        else:
+            filename = "kmeans_clustering_full.png" 
+            print("Sampling all data...")
+            df = df_full
     else:
         print("Sampling 10000 random rows from the CSV file...")
         df = df_full.sample(n=10000)
+        filename = "kmeans_clustering_sample.png"
 
     features = ['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness', 'liveliness', 'valence']
     print("Plotting Data....")
@@ -71,13 +80,7 @@ def main():
     sns.pairplot(df, hue = 'c', palette = 'hls', vars=features)
     plt.suptitle("K-Means Clustering: Spotify Audio Features")
     
-
-    ## Save as a PNG file
-
-    if choice == 'y':
-        filename = "kmeans_clustering_full.png"
-    else:
-        filename = "kmeans_clustering_sample.png"
+        
 
     plt.savefig(filename)
     plt.show()
