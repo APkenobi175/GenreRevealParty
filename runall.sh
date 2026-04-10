@@ -1,15 +1,15 @@
 #!/bin/bash
 #SBATCH --account=notchpeak-gpu
 #SBATCH --partition=notchpeak-gpu
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:2
 #SBATCH --time=01:00:00
-#SBATCH --job-name=kmeans_all
+#SBATCH --job-name=runall
 #SBATCH --output=results.log
+#SBATCH --ntasks=4
 
 
 module load cuda
 module load python
-module load openmp
 module load openmpi
 
 
@@ -21,6 +21,7 @@ cmake ..
 make
 cd ..
 ./build/GenreRevealPartySerial
+mv output.csv serial_output.csv
 cd ..
 
 echo 'RUNNING OPEN MP IMPLEMENTATION'
@@ -30,6 +31,7 @@ cmake ..
 make
 cd ..
 ./build/GenreRevealPartyOpenMP
+mv output.csv openmp_output.csv
 cd ..
 
 echo 'RUNNING MPI IMPLEMENTATION'
@@ -39,6 +41,7 @@ cmake ..
 make
 cd ..
 mpirun -np 4 ./build/GenreRevealPartyMPI
+mv output.csv mpi_output.csv
 cd ..
 
 echo 'RUNNING CUDA IMPLEMENTATION'
@@ -48,6 +51,8 @@ cmake ..
 make
 cd ..
 ./build/GenreRevealPartyCUDA
+mv output.csv cuda_output.csv
+
 cd ..
 
 echo 'RUNNING CUDA WITH OPENMP IMPLEMENTATION'
@@ -56,18 +61,16 @@ mkdir -p build && cd build
 cmake ..
 make
 cd ..
-./build/GenreRevealPartyCudaMPI
+mpirun -np 4 ./build/mpi-cuda
+mv output.csv mpi_cuda_output.csv
 cd ..
 
 
 echo 'ALL IMPLEMENTATIONS COMPLETE'
-echo 'VALIDATING RESULTS'
-
-python validation.py
 
 echo 'Creating Visualizations'
 
 cd ~/GenreRevealParty/visualizer
 
-python visualize.py
+python visualize.py ~/GenreRevealParty/results/serial_output.csv
 

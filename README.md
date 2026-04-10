@@ -1,6 +1,8 @@
 
 # Instructions for Running Code on Clusters
 
+## Individual Implementation Instructions
+
 1. Navigate to ondemand.chpc.utah.edu
 
     - You can also use SSH to log in directly from your  terminal, Example:
@@ -10,7 +12,7 @@
 
 2. Log into your account and do the 2 factor authentication.
 
-3. In the top left corner cick ont he `clusters` drop down menu and select a cluster with shell access
+3. In the top left corner cick ont he `clusters` drop down menu and select 'Notchpeak Shell Access'
 
     <img src = pictures/image.png>
 
@@ -24,7 +26,8 @@
     git clone git@github.com:APkenobi175/GenreRevealParty.git
     ```
 
-5. Download dataset from [here](https://www.kaggle.com/datasets/rodolfofigueroa/spotify-12m-songs?resource=download)
+6. Download dataset from [here](https://www.kaggle.com/datasets/rodolfofigueroa/spotify-12m-songs?resource=download)
+
     - On the dashboard of ondemand.chpc.utah.edu, click on the `files` tab in the top left menu, and select `Home Directory`
 
     - Navigate to `GenreRevealParty` directory
@@ -35,47 +38,64 @@
 
     - Unzip, and move `tracks_features.csv` to the `GenreRevealParty/data` directory.
 
-6. Back in the shell, Load the module for your desired implementation (e.g., OpenMP, CUDA, OpenMPI):
+7. Back in the shell, Load the module for your desired implementation (e.g., OpenMP, CUDA, OpenMPI):
     - Examples:
-      - For OpenMP:
-            `module load openmp`
       - For CUDA:
             `module load cuda`
       - For OpenMPI:
             `module load openmpi`
 
-6. If running on GPU, request a GPU node:
+8. Request GPU nodes, and task allocation for running the program. Example for requesting 4 tasks and 2 GPUs:
 
     ```bash
-    srun --account=kingspeak-gpu --partition=kingspeak-gpu --gres=gpu:1 --pty bash
+    srun --ntasks=4 --account=notchpeak-gpu --partition=notchpeak-gpu --gres=gpu:2 --pty bash
     ```
 
-7. Compile the code using the provided Makefiles, in the appropriate directory (e.g., `GenreRevealParty/parallel_cuda/build` for CUDA implementation):
+9. Navigate to the implementation directory and build the program using CMake
 
     ```bash
-    cd -p GenreRevealParty/<IMPLEMENTATION_DIRECTORY>/build
-    cmake ..
-    make
+    cd GenreRevealParty/parallel_cuda
     ```
 
-8. Return to the implementation directory and run the program
-
-    ```bash
-    cd ..
-    ./build/GenreRevealParty<IMPLEMENTATIONTYPE>>
-    ```
-
-    - Example for CUDA:
+    - Compile the program using CMake and then return to the implementation directory:
 
         ```bash
-        cd -p GenreRevealParty/parallel_cuda/build
+        mkdir build
+        cd build
         cmake ..
         make
         cd ..
-        ./build/GenreRevealPartyCUDA
         ```
 
-    > note: use the -p flag with cd because the build directory is not in the repository and is included in the .gitignore file
+10. Run the program
+
+    - For non MPI implementations, you can run the program directly from the implementation directory using the following command:
+
+        ```bash
+        ./build/GenreRevealParty<IMPLEMENTATIONTYPE>
+        ```
+
+    - If you are using an MPI implemenation you can run the following commands from the implementation directory:
+
+        - OpenMPI
+
+        ```bash
+        mpirun -np <NUMBER_OF_PROCESSES> ./build/GenreRevealPartyMPI
+        ```
+
+        - Cuda With MPI
+
+        ```bash
+        mpirun -np <NUMBER_OF_PROCESSES> ./build/mpi-cuda
+        ```
+
+## Running All Implementations At Once
+
+To run all implementations at once you can run the included sbatch script `runall.sh`. This will automatically request resources, and run all implementations sequentially. To run the script use the following command from any directory on notchpeak.
+
+```bash
+sbatch runall.sh
+```
 
 ## Important Notes
 
@@ -84,5 +104,3 @@
 2. always run the code from the implementation directory (e.g., `GenreRevealParty/parallel_cuda`) to ensure that the correct paths are used for data and other resources. E.G do not run from the build directory, as this may cause issues with finding the data file or other resources.
 
 3. Dataset is not stored in the repo and must be downlaoded separately due to its size. Make sure to place the `tracks_features.csv` file in the `GenreRevealParty/data` directory for the code to run properly.
-
-
