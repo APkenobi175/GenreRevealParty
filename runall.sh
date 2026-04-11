@@ -34,7 +34,7 @@ cd ..
 mv output.csv openmp_output.csv
 cd ..
 
-echo 'RUNNING MPI IMPLEMENTATION'
+echo 'RUNNING MPI IMPLEMENTATION with 4 THREADS'
 cd ~/GenreRevealParty/OpenMPI
 mkdir -p build && cd build
 cmake ..
@@ -55,7 +55,7 @@ mv output.csv cuda_output.csv
 
 cd ..
 
-echo 'RUNNING CUDA WITH OPENMP IMPLEMENTATION'
+echo 'RUNNING CUDA AND OPENMPI IMPLEMENTATION with 4 THREADS'
 cd ~/GenreRevealParty/cuda_MPI
 mkdir -p build && cd build
 cmake ..
@@ -65,12 +65,5 @@ mpirun -np 4 ./build/mpi-cuda
 mv output.csv mpi_cuda_output.csv
 cd ..
 
-
 echo 'ALL IMPLEMENTATIONS COMPLETE'
-
-echo 'Creating Visualizations'
-
-cd ~/GenreRevealParty/visualizer
-
-python visualize.py ~/GenreRevealParty/results/serial_output.csv
 
