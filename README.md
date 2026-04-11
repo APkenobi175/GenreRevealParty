@@ -91,10 +91,29 @@
 
 ## Running All Implementations At Once
 
-To run all implementations at once you can run the included sbatch script `runall.sh`. This will automatically request resources, and run all implementations sequentially. To run the script use the following command from any directory on notchpeak.
+To run all implementations at once you can run the included sbatch script `runall.sh`. This will automatically request resources, and run all implementations. To run the script use the following command from any directory on notchpeak.
 
 ```bash
 sbatch runall.sh
+```
+
+- After submitting the job you will see a message like the following:
+
+```bash
+Submitted batch job 123456
+```
+
+- You can check the status of the job using the following command:
+
+```bash
+squeue -u <YOUR_USERNAME>
+```
+
+- When its complete you can find the output files in the `results.log` file in root directory of the project.
+- You can view the output files using the `cat` command. Example:
+
+```bash
+cat results.log
 ```
 
 ## Important Notes

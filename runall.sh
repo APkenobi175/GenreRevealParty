@@ -25,7 +25,7 @@ mv output.csv serial_output.csv
 cd ..
 
 echo 'RUNNING OPEN MP IMPLEMENTATION'
-cd ~/GenreRevealParty/openMP
+cd ~/GenreRevealParty/OpenMP
 mkdir -p build && cd build
 cmake ..
 make
