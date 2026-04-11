@@ -36,7 +36,9 @@ void startGPUs(std::vector<Point> &points, int my_rank, int comm_sz,
   int threadAlloc[comm_sz];
   int displs[comm_sz];
 
-  calculate_displacements(comm_sz, points.size(), displs, threadAlloc);
+  // AP 4/11/26 - Change points.size() to total_points as points.size() is only valid for rank 0
+  // This is why it works for only one task, but as soon as we have more than one task it doesn't work.
+  calculate_displacements(comm_sz, total_points, displs, threadAlloc);
 
   // Prepare local buffers for the work chunk
   int recvcount = threadAlloc[my_rank];
