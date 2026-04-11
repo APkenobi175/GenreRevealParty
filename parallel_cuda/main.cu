@@ -21,8 +21,8 @@
 #endif
 
 
-constexpr int CLUSTER_COUNT = 5;
-constexpr int KMEANS_ITERATIONS = 5;
+constexpr int CLUSTER_COUNT = 30;
+constexpr int KMEANS_ITERATIONS = 30;
 
 
 
