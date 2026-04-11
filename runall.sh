@@ -5,7 +5,7 @@
 #SBATCH --time=00:10:00
 #SBATCH --job-name=runall
 #SBATCH --output=results.log
-#SBATCH --ntasks=4
+#SBATCH --ntasks=8
 
 
 module load cuda
