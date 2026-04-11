@@ -6,6 +6,7 @@
 #SBATCH --job-name=runall
 #SBATCH --output=results.log
 #SBATCH --ntasks=8
+#SBATCH --nodelist=notch001
 
 
 module load cuda
