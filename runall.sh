@@ -2,7 +2,7 @@
 #SBATCH --account=notchpeak-gpu
 #SBATCH --partition=notchpeak-gpu
 #SBATCH --gres=gpu:2
-#SBATCH --time=01:00:00
+#SBATCH --time=00:10:00
 #SBATCH --job-name=runall
 #SBATCH --output=results.log
 #SBATCH --ntasks=4
