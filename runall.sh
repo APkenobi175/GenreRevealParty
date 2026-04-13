@@ -1,13 +1,12 @@
 #!/bin/bash
 #SBATCH --account=notchpeak-gpu
 #SBATCH --partition=notchpeak-gpu
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:4
 #SBATCH --time=00:10:00
 #SBATCH --job-name=runall
 #SBATCH --output=results.log
 #SBATCH --ntasks=8
 #SBATCH --nodelist=notch001
-
 
 module load cuda
 module load python
@@ -19,7 +18,6 @@ nvidia-smi
 
 echo ""
 echo ""
-
 
 echo 'RUNNING SERIAL IMPLEMENTATION'
 echo ""
@@ -78,4 +76,3 @@ mv output.csv mpi_cuda_output.csv
 cd ..
 
 echo 'ALL IMPLEMENTATIONS COMPLETE'
-
