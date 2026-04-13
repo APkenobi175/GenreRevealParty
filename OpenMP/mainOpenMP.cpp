@@ -82,7 +82,7 @@ void kMeansClustering(std::vector<Point> &points) {
     computeCentroids(centroids.data(), centroid_temps.data(),
                      points_per_cluster.data(), CLUSTER_COUNT);
     // Reset Temporary variables
-    centroid_temps.fill(initialize_point(0, 0, 0, 0, 0, 0, 0, 0));
+    centroid_temps.fill(initialize_point(0, 0, 0, 0, 0, 0, 0));
     points_per_cluster.fill(0);
   }
 }

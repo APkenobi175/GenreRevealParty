@@ -3,7 +3,7 @@ import pandas as pd
 csv1 = pd.read_csv("output.csv")
 csv2 = pd.read_csv("output_parallel.csv")
 
-sort_cols = ['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness', 'liveliness', 'valence']
+sort_cols = ['danceability', 'energy', 'speechiness', 'acousticness', 'instrumentalness', 'liveliness', 'valence']
 sorted_csv1 = csv1.sort_values(by=sort_cols).reset_index(drop=True)
 sorted_csv2 = csv2.sort_values(by=sort_cols).reset_index(drop=True)
 
