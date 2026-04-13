@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=notchpeak-gpu
 #SBATCH --partition=notchpeak-gpu
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:2
 #SBATCH --time=00:10:00
 #SBATCH --job-name=runall
 #SBATCH --output=results.log
