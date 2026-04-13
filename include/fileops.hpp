@@ -51,8 +51,8 @@ inline std::vector<Point> readcsv() {
   while (getline(file, line)) {
     std::stringstream lineStream(line);
     std::string bit;
-    double danceability, energy, loudness, speechiness, acousticness,
-        instrumentalness, liveliness, valence;
+    double danceability, energy, speechiness, acousticness, instrumentalness,
+        liveliness, valence;
     // Skip first nine elements in tracks_features
 
     for (int i = 0; i < 9; i++)
@@ -65,10 +65,8 @@ inline std::vector<Point> readcsv() {
 
     // Skip key
     safe_get_csv_val(lineStream, bit);
-
+    // Skip loudness
     safe_get_csv_val(lineStream, bit);
-    loudness = stof(bit);
-
     // Skip mode
     safe_get_csv_val(lineStream, bit);
 
@@ -83,9 +81,9 @@ inline std::vector<Point> readcsv() {
     safe_get_csv_val(lineStream, bit);
     valence = stof(bit);
     getline(lineStream, bit, '\n');
-    points.push_back(initialize_point(danceability, energy, loudness,
-                                      speechiness, acousticness,
-                                      instrumentalness, liveliness, valence));
+    points.push_back(initialize_point(danceability, energy, speechiness,
+                                      acousticness, instrumentalness,
+                                      liveliness, valence));
   }
   return points;
 }
@@ -94,16 +92,16 @@ inline void writecsv(Point *points, int point_size) {
   std::ofstream myfile;
   myfile.open("output.csv");
   // Header Write
-  myfile << "danceability,energy,loudness,speechiness,acousticness,"
+  myfile << "danceability,energy,speechiness,acousticness,"
             "instrumentalness,liveliness,valence,c"
          << std::endl;
 
   for (int i = 0; i < point_size; i++) {
     Point *it = &points[i];
-    myfile << it->danceability << "," << it->energy << "," << it->loudness
-           << "," << it->speechiness << "," << it->acousticness << ","
-           << it->instrumentalness << "," << it->liveliness << ","
-           << it->valence << "," << it->cluster << std::endl;
+    myfile << it->danceability << "," << it->energy << "," << it->speechiness
+           << "," << it->acousticness << "," << it->instrumentalness << ","
+           << it->liveliness << "," << it->valence << "," << it->cluster
+           << std::endl;
   }
   myfile.close();
 }

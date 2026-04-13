@@ -73,7 +73,7 @@ def main():
         df = df_full.sample(n=10000)
         filename = "kmeans_clustering_sample.png"
 
-    features = ['danceability', 'energy', 'loudness', 'speechiness', 'acousticness', 'instrumentalness', 'liveliness', 'valence']
+    features = ['danceability', 'energy', 'speechiness', 'acousticness', 'instrumentalness', 'liveliness', 'valence']
     print("Plotting Data....")
     timer = threading.Thread(target=elapsed_time_thread, daemon=True)
     timer.start()

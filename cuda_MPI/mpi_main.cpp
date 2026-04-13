@@ -23,7 +23,7 @@ void startGPUs(std::vector<Point> &points, int my_rank, int comm_sz,
   std::array<Point, CLUSTER_COUNT> local_centroid_temps;
   std::array<int, CLUSTER_COUNT> local_points_per_cluster;
   std::array<int, CLUSTER_COUNT> global_points_per_cluster;
-  local_centroid_temps.fill(initialize_point(0, 0, 0, 0, 0, 0, 0, 0));
+  local_centroid_temps.fill(initialize_point(0, 0, 0, 0, 0, 0, 0));
   local_points_per_cluster.fill(0);
   int i;
 
@@ -36,8 +36,9 @@ void startGPUs(std::vector<Point> &points, int my_rank, int comm_sz,
   int threadAlloc[comm_sz];
   int displs[comm_sz];
 
-  // AP 4/11/26 - Change points.size() to total_points as points.size() is only valid for rank 0
-  // This is why it works for only one task, but as soon as we have more than one task it doesn't work.
+  // AP 4/11/26 - Change points.size() to total_points as points.size() is only
+  // valid for rank 0 This is why it works for only one task, but as soon as we
+  // have more than one task it doesn't work.
   calculate_displacements(comm_sz, total_points, displs, threadAlloc);
 
   // Prepare local buffers for the work chunk
