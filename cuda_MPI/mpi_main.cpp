@@ -9,9 +9,10 @@
 #include <mpi.h>
 constexpr int CLUSTER_COUNT = 5;
 constexpr int KMEANS_ITERATIONS = 5;
-
-void kMeansClustering(Point *points, int point_count, int rank,
-                      int cluster_count, int iterations);
+void accumulatingStep(Point *points, int point_count, int rank,
+                      Point *centroids, Point *centroid_temps,
+                      int cluster_count, int *points_per_cluster,
+                      bool shouldCopyPoints);
 
 void startGPUs(std::vector<Point> &points, int my_rank, int comm_sz,
                int total_points) {
@@ -49,8 +50,25 @@ void startGPUs(std::vector<Point> &points, int my_rank, int comm_sz,
   MPI_Scatterv(points.data(), threadAlloc, displs, MPI_POINT_TYPE,
                local_data.data(), recvcount, MPI_POINT_TYPE, 0, MPI_COMM_WORLD);
 
-  kMeansClustering(local_data.data(), local_data.size(), my_rank, CLUSTER_COUNT,
-                   KMEANS_ITERATIONS);
+  for (i = 0; i < KMEANS_ITERATIONS; i++) {
+    // Partition and accumulate centroids
+    accumulatingStep(local_data.data(), local_data.size(), my_rank,
+                     centroids.data(), local_centroid_temps.data(),
+                     CLUSTER_COUNT, local_points_per_cluster.data(),
+                     i == (KMEANS_ITERATIONS - 1));
+
+    // Sum centroids and points per cluster
+    MPI_Allreduce(local_centroid_temps.data(), global_centroid_temps.data(),
+                  CLUSTER_COUNT, MPI_POINT_TYPE, MPI_POINT_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(local_points_per_cluster.data(),
+                  global_points_per_cluster.data(), CLUSTER_COUNT, MPI_INT,
+                  MPI_SUM, MPI_COMM_WORLD);
+    computeCentroids(centroids.data(), global_centroid_temps.data(),
+                     global_points_per_cluster.data(), CLUSTER_COUNT);
+    // Reset Temporary variables
+    local_centroid_temps.fill(initialize_point(0, 0, 0, 0, 0, 0, 0));
+    local_points_per_cluster.fill(0);
+  }
 
   MPI_Gatherv(local_data.data(), local_data.size(), MPI_POINT_TYPE,
               points.data(), threadAlloc, displs, MPI_POINT_TYPE, 0,
