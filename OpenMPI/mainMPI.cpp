@@ -93,20 +93,25 @@ int main() {
     auto file_duration = std::chrono::duration_cast<std::chrono::milliseconds>(
         end_file_time - start_file_time);
     std::cout << "File Read time (ms): " << file_duration.count() << std::endl;
-    // 3. Perform Kmeans Clustering and time how long it takes, and print the
-    // time to the console.
-    start_kmeans_time = std::chrono::high_resolution_clock::now();
   }
+
   MPI_Bcast(&total_points, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+  // Time the duration of kmeans algorithm
+  start_kmeans_time = std::chrono::high_resolution_clock::now();
   kMeansClustering(points, my_rank, comm_sz, total_points);
+
+  end_kmeans_time = std::chrono::high_resolution_clock::now();
+  auto kmeans_duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+      end_kmeans_time - start_kmeans_time);
+  long local_ms_taken = kmeans_duration.count();
+  long ms_taken;
+
+  MPI_Reduce(&local_ms_taken, &ms_taken, 1, MPI_LONG, MPI_MAX, 0,
+             MPI_COMM_WORLD);
+
   if (my_rank == 0) {
-    end_kmeans_time = std::chrono::high_resolution_clock::now();
-    auto kmeans_duration =
-        std::chrono::duration_cast<std::chrono::milliseconds>(
-            end_kmeans_time - start_kmeans_time);
-    std::cout << "Kmeans clustering time (ms): " << kmeans_duration.count()
-              << std::endl;
+    std::cout << "Kmeans clustering time (ms): " << ms_taken << std::endl;
     start_write_time = std::chrono::high_resolution_clock::now();
     writecsv(&points[0], points.size());
     end_write_time = std::chrono::high_resolution_clock::now();

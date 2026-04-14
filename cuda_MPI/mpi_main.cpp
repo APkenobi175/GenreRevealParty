@@ -83,17 +83,23 @@ int main() {
     std::cout << "File Read time (ms): " << file_duration.count() << std::endl;
     // 3. Perform Kmeans Clustering and time how long it takes, and print the
     // time to the console.
-    start_kmeans_time = high_resolution_clock::now();
   }
-  MPI_Bcast(&total_points, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+  // Time duration of algorithm from the point where the GPUs are initialized
+  MPI_Bcast(&total_points, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  start_kmeans_time = high_resolution_clock::now();
   startGPUs(points, my_rank, comm_sz, total_points);
+
+  end_kmeans_time = high_resolution_clock::now();
+  auto kmeans_duration =
+      duration_cast<milliseconds>(end_kmeans_time - start_kmeans_time);
+  long local_ms_taken = kmeans_duration.count();
+  long ms_taken;
+  MPI_Reduce(&local_ms_taken, &ms_taken, 1, MPI_LONG, MPI_MAX, 0,
+             MPI_COMM_WORLD);
+
   if (my_rank == 0) {
-    end_kmeans_time = high_resolution_clock::now();
-    auto kmeans_duration =
-        duration_cast<milliseconds>(end_kmeans_time - start_kmeans_time);
-    std::cout << "Kmeans clustering time (ms): " << kmeans_duration.count()
-              << std::endl;
+    std::cout << "Kmeans clustering time (ms): " << ms_taken << std::endl;
     start_write_time = high_resolution_clock::now();
     writecsv(&points[0], points.size());
     end_write_time = high_resolution_clock::now();
