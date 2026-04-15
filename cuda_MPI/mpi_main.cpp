@@ -5,6 +5,7 @@
 
 #include <array>
 #include <chrono>
+#include <cstdio>
 #include <ctime>
 #include <mpi.h>
 constexpr int CLUSTER_COUNT = 5;
@@ -13,6 +14,8 @@ void accumulatingStep(Point *points, int point_count, int rank,
                       Point *centroids, Point *centroid_temps,
                       int cluster_count, int *points_per_cluster,
                       bool shouldCopyPoints);
+
+void setDevice(int rank);
 
 void startGPUs(std::vector<Point> &points, int my_rank, int comm_sz,
                int total_points) {
@@ -50,7 +53,10 @@ void startGPUs(std::vector<Point> &points, int my_rank, int comm_sz,
   MPI_Scatterv(points.data(), threadAlloc, displs, MPI_POINT_TYPE,
                local_data.data(), recvcount, MPI_POINT_TYPE, 0, MPI_COMM_WORLD);
 
+  if (my_rank != 0)
+    setDevice(my_rank);
   for (i = 0; i < KMEANS_ITERATIONS; i++) {
+    // Reset Temporary variables
     // Partition and accumulate centroids
     accumulatingStep(local_data.data(), local_data.size(), my_rank,
                      centroids.data(), local_centroid_temps.data(),

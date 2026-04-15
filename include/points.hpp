@@ -72,10 +72,10 @@ struct Point {
   }
 };
 
-inline Point initialize_point(double danceability, double energy,
-                              double speechiness, double acousticness,
-                              double instrumentalness, double liveliness,
-                              double valence) {
+__host__ __device__ inline Point
+initialize_point(double danceability, double energy, double speechiness,
+                 double acousticness, double instrumentalness,
+                 double liveliness, double valence) {
   return {danceability, energy,  speechiness, acousticness, instrumentalness,
           liveliness,   valence, -1,          __DBL_MAX__};
 }

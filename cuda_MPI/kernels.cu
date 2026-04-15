@@ -1,20 +1,54 @@
 #include "../include/kernels.cuh"
 #include "../include/points.hpp"
+#include <cassert>
 #include <cstdio>
 
-void accumulateCentroids(Point *centroids, Point *centroid_temps,
-                         int cluster_count, int *points_per_cluster,
-                         int total_points, Point *points);
+__global__ void initPoints(Point *arr, int n) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < n) {
+    arr[i] = initialize_point(0, 0, 0, 0, 0, 0, 0);
+  }
+}
+
+inline cudaError_t checkCuda(cudaError_t result) {
+  if (result != cudaSuccess) {
+    fprintf(stderr, "CUDA Runtime Error: %s\n", cudaGetErrorString(result));
+    assert(result == cudaSuccess);
+  }
+  return result;
+}
+
+void accumulateCentroids(Point *d_centroids, Point *d_centroid_temps,
+                         int cluster_count, int *d_points_per_cluster,
+                         int total_points, Point *d_points) {
+  int threads_per_block = 1024; // Change this maybe? or actually we can use it
+                                // as a parameter in main
+  int blocks = (total_points + threads_per_block - 1) /
+               threads_per_block; // Calculate number of blocks needed to cover
+                                  // all points
+
+  // 1. Launch kernal to assign clusters
+  assignClustersGPU<<<blocks, threads_per_block>>>(d_points, total_points,
+                                                   d_centroids, cluster_count);
+  cudaDeviceSynchronize();
+
+  // 2. NEW - Launch kernel to accumulate centroids
+  accumulateCentroidsGPU<<<blocks, threads_per_block>>>(
+      d_points, total_points, d_centroid_temps, d_points_per_cluster);
+  cudaDeviceSynchronize();
+}
+
+void setDevice(int rank) {
+  int device_count;
+  cudaGetDeviceCount(&device_count);
+  checkCuda(cudaSetDevice(rank % device_count));
+}
 
 void accumulatingStep(Point *points, int point_count, int rank,
                       Point *centroids, Point *centroid_temps,
                       int cluster_count, int *points_per_cluster,
                       bool shouldCopyPoints) {
 
-  cudaSetDevice(rank);
-  printf("Starting KMeans Clustering on GPU...\n");
-
-  // 1. Allocate GPU memory for points and centroids
   Point *d_points, *d_centroids,
       *d_centroid_temps;     // NEW, added d_centroid_temps for accumulating
                              // centroid sums on GPU
@@ -28,10 +62,10 @@ void accumulatingStep(Point *points, int point_count, int rank,
   // 2. Copy points from host to device
   cudaMemcpy(d_points, points, point_count * sizeof(Point),
              cudaMemcpyHostToDevice);
-
   cudaMemcpy(d_centroids, centroids, cluster_count * sizeof(Point),
              cudaMemcpyHostToDevice);
-  printf("Initialized centroids and copied to GPU\n");
+  cudaMemset(d_centroid_temps, 0, cluster_count * sizeof(Point));
+  cudaMemset(d_points_per_cluster, 0, cluster_count * sizeof(int));
 
   accumulateCentroids(d_centroids, d_centroid_temps, cluster_count,
                       d_points_per_cluster, point_count, d_points);
@@ -41,38 +75,26 @@ void accumulatingStep(Point *points, int point_count, int rank,
   cudaMemcpy(points_per_cluster, d_points_per_cluster,
              cluster_count * sizeof(int), cudaMemcpyDeviceToHost);
 
-  if (shouldCopyPoints)
-    cudaMemcpy(points, d_points, point_count * sizeof(Point),
-               cudaMemcpyDeviceToHost);
+#ifdef DEBUG_INFO
+  if (rank == 0) {
+    for (int i = 0; i < cluster_count; i++) {
+      Point centroid = centroid_temps[i];
+      printf("Centroid: %f %f %f %f %f %f %d\n", centroid.acousticness,
+             centroid.danceability, centroid.energy, centroid.instrumentalness,
+             centroid.liveliness, centroid.valence, centroid.cluster);
+    }
+    printf("Cluster counts\n");
+    for (int i = 0; i < cluster_count; i++)
+      printf("Points: %d\n", points_per_cluster[i]);
+  }
+#endif
+
+  cudaMemcpy(points, d_points, point_count * sizeof(Point),
+             cudaMemcpyDeviceToHost);
 
   // 6. Free GPU memory
   cudaFree(d_points);
   cudaFree(d_centroids);
   cudaFree(d_centroid_temps);
   cudaFree(d_points_per_cluster);
-}
-
-void accumulateCentroids(Point *d_centroids, Point *d_centroid_temps,
-                         int cluster_count, int *d_points_per_cluster,
-                         int total_points, Point *d_points) {
-  int threads_per_block = 1024; // Change this maybe? or actually we can use it
-                                // as a parameter in main
-  int blocks = (total_points + threads_per_block - 1) /
-               threads_per_block; // Calculate number of blocks needed to cover
-                                  // all points
-
-  // NEW - initialize temp array and points per cluster to 0 on GPU before
-  // accumulation
-  cudaMemset(d_centroid_temps, 0, cluster_count * sizeof(Point));
-  cudaMemset(d_points_per_cluster, 0, cluster_count * sizeof(int));
-
-  // 1. Launch kernal to assign clusters
-  assignClustersGPU<<<blocks, threads_per_block>>>(d_points, total_points,
-                                                   d_centroids, cluster_count);
-  cudaDeviceSynchronize();
-
-  // 2. NEW - Launch kernel to accumulate centroids
-  accumulateCentroidsGPU<<<blocks, threads_per_block>>>(
-      d_points, total_points, d_centroid_temps, d_points_per_cluster);
-  cudaDeviceSynchronize();
 }

@@ -5,7 +5,7 @@ inline void create_point_mpi_type(MPI_Datatype *out) {
   Point my_point;
   MPI_Aint base_address;
   MPI_Datatype typesig[3] = {MPI_DOUBLE, MPI_INT, MPI_DOUBLE};
-  int block_lengths[3] = {8, 1, 1};
+  int block_lengths[3] = {7, 1, 1};
   MPI_Aint displacements[3];
   MPI_Get_address(&my_point, &base_address);
   MPI_Get_address(&my_point.danceability, &displacements[0]);
