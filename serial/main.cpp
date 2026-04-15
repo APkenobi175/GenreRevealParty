@@ -10,7 +10,7 @@
 #include <vector>
 
 // 1. Initialize 5 Clusters and 5 KMeans Iterations
-constexpr int CLUSTER_COUNT = 5;
+constexpr int CLUSTER_COUNT = 100;
 constexpr int KMEANS_ITERATIONS = 5;
 
 void kMeansClustering(std::vector<Point> &points) {
