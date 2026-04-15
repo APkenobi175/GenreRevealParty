@@ -3,6 +3,29 @@
 
 #include "points.hpp"
 
+__device__ inline double atomicAddDouble(double *address, double val) {
+#if __CUDA_ARCH__ >= 600
+  // ✔ Pascal (6.0+) and newer: hardware atomic
+  return atomicAdd(address, val);
+
+#else
+  // ✔ Maxwell (5.2) fallback using CAS
+  unsigned long long int *address_as_ull = (unsigned long long int *)address;
+
+  unsigned long long int old = *address_as_ull, assumed;
+
+  do {
+    assumed = old;
+    old = atomicCAS(address_as_ull, assumed,
+                    __double_as_longlong(val + __longlong_as_double(assumed)));
+
+  } while (assumed != old);
+
+  return __longlong_as_double(old);
+
+#endif
+}
+
 __global__ void assignClustersGPU(Point *points, int point_count,
                                   Point *centroids, int cluster_count) {
   // This kernal will assign each point to its nearest centroid, and store the
@@ -58,13 +81,14 @@ __global__ void accumulateCentroidsGPU(Point *points, int point_count,
 
   int c = points[idx].cluster;
   atomicAdd(&pointersPerCluster[c], 1);
-  atomicAdd(&centroid_temps[c].danceability, points[idx].danceability);
-  atomicAdd(&centroid_temps[c].energy, points[idx].energy);
-  atomicAdd(&centroid_temps[c].speechiness, points[idx].speechiness);
-  atomicAdd(&centroid_temps[c].acousticness, points[idx].acousticness);
-  atomicAdd(&centroid_temps[c].instrumentalness, points[idx].instrumentalness);
-  atomicAdd(&centroid_temps[c].liveliness, points[idx].liveliness);
-  atomicAdd(&centroid_temps[c].valence, points[idx].valence);
+  atomicAddDouble(&centroid_temps[c].danceability, points[idx].danceability);
+  atomicAddDouble(&centroid_temps[c].energy, points[idx].energy);
+  atomicAddDouble(&centroid_temps[c].speechiness, points[idx].speechiness);
+  atomicAddDouble(&centroid_temps[c].acousticness, points[idx].acousticness);
+  atomicAddDouble(&centroid_temps[c].instrumentalness,
+                  points[idx].instrumentalness);
+  atomicAddDouble(&centroid_temps[c].liveliness, points[idx].liveliness);
+  atomicAddDouble(&centroid_temps[c].valence, points[idx].valence);
 }
 
 __global__ void computeCentroidsGPU(Point *centroids, Point *centroid_temps,

@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(GenereRevealMPICuda CUDA CXX)
 set(CMAKE_CUDA_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CUDA_ARCHITECTURES 60 70 80)
+set(CMAKE_CUDA_ARCHITECTURES 52 60 70 80)
 
 
 # Find MPI
@@ -26,8 +26,8 @@ set_target_properties(kernels
 add_executable(mpi-cuda mpi_main.cpp)
 
 target_link_libraries(mpi-cuda PRIVATE
-    kernels
     MPI::MPI_CXX
+    kernels
 )
 
 target_include_directories(mpi-cuda
