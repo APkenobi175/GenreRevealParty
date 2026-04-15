@@ -18,17 +18,17 @@ nvidia-smi
 echo ""
 echo ""
 
-echo 'RUNNING SERIAL IMPLEMENTATION'
-echo ""
+# echo 'RUNNING SERIAL IMPLEMENTATION'
+# echo ""
 
-cd ~/GenreRevealParty/serial
-mkdir -p build && cd build
-cmake ..
-make
-cd ..
-./build/GenreRevealPartySerial
-mv output.csv serial_output.csv
-cd ..
+# cd ~/GenreRevealParty/serial
+# mkdir -p build && cd build
+# cmake ..
+# make
+# cd ..
+# ./build/GenreRevealPartySerial
+# mv output.csv serial_output.csv
+# cd ..
 
 # echo 'RUNNING OPEN MP IMPLEMENTATION'
 # cd ~/GenreRevealParty/OpenMP
@@ -51,15 +51,15 @@ cd ..
 # mv output.csv mpi_output.csv
 # cd ..
 # echo ""
-# echo 'RUNNING CUDA IMPLEMENTATION'
-# echo ""
-# cd ~/GenreRevealParty/parallel_cuda
-# mkdir -p build && cd build
-# cmake ..
-# make
-# cd ..
-# ./build/GenreRevealPartyCUDA
-# mv output.csv cuda_output.csv
+echo 'RUNNING CUDA IMPLEMENTATION'
+echo ""
+cd ~/GenreRevealParty/parallel_cuda
+mkdir -p build && cd build
+cmake ..
+make
+cd ..
+./build/GenreRevealPartyCUDA
+mv output.csv cuda_output.csv
 
 # cd ..
 # echo ""
