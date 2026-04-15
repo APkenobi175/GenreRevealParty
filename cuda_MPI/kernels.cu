@@ -31,10 +31,29 @@ void accumulateCentroids(Point *d_centroids, Point *d_centroid_temps,
   assignClustersGPU<<<blocks, threads_per_block>>>(d_points, total_points,
                                                    d_centroids, cluster_count);
   checkCuda(cudaDeviceSynchronize());
+  int shared_size = cluster_count * sizeof(Point) + cluster_count * sizeof(int);
 
-  // 2. NEW - Launch kernel to accumulate centroids
+#if __CUDA_ARCH__ >= 600
   accumulateCentroidsGPU<<<blocks, threads_per_block>>>(
       d_points, total_points, d_centroid_temps, d_points_per_cluster);
+
+#else
+  Point *d_block_centroids;
+  int *d_block_counts;
+
+  cudaMalloc(&d_block_centroids, blocks * cluster_count * sizeof(Point));
+  cudaMalloc(&d_block_counts, blocks * cluster_count * sizeof(int));
+
+  accumulateBlockCentroids<<<blocks, threads_per_block, shared_size>>>(
+      d_points, total_points, d_block_centroids, d_block_counts, cluster_count);
+
+  checkCuda(cudaDeviceSynchronize());
+  // Use one warp to reduce each block, given we have small cluster counts
+  reduceCentroids<<<1, 32>>>(d_block_centroids, d_block_counts,
+                             d_centroid_temps, d_points_per_cluster, blocks,
+                             cluster_count);
+#endif
+
   checkCuda(cudaDeviceSynchronize());
 }
 

@@ -91,6 +91,86 @@ __global__ void accumulateCentroidsGPU(Point *points, int point_count,
   atomicAddDouble(&centroid_temps[c].valence, points[idx].valence);
 }
 
+__global__ void accumulateBlockCentroids(Point *points, int point_count,
+                                         Point *block_centroids,
+                                         int *block_counts, int K) {
+  extern __shared__ unsigned char smem[];
+
+  Point *s_centroids = (Point *)smem;
+  int *s_counts = (int *)&s_centroids[K];
+
+  // 1. Initialize shared memory
+  for (int i = threadIdx.x; i < K; i += blockDim.x) {
+    s_counts[i] = 0;
+
+    s_centroids[i].danceability = 0.0;
+    s_centroids[i].energy = 0.0;
+    s_centroids[i].speechiness = 0.0;
+    s_centroids[i].acousticness = 0.0;
+    s_centroids[i].instrumentalness = 0.0;
+    s_centroids[i].liveliness = 0.0;
+    s_centroids[i].valence = 0.0;
+  }
+  __syncthreads();
+
+  // 2. Process points
+  int idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+  if (idx < point_count) {
+    int c = points[idx].cluster;
+
+    // Shared memory atomics (fast, low contention)
+    atomicAdd(&s_counts[c], 1);
+    atomicAddDouble(&s_centroids[c].danceability, points[idx].danceability);
+    atomicAddDouble(&s_centroids[c].energy, points[idx].energy);
+    atomicAddDouble(&s_centroids[c].speechiness, points[idx].speechiness);
+    atomicAddDouble(&s_centroids[c].acousticness, points[idx].acousticness);
+    atomicAddDouble(&s_centroids[c].instrumentalness,
+                    points[idx].instrumentalness);
+    atomicAddDouble(&s_centroids[c].liveliness, points[idx].liveliness);
+    atomicAddDouble(&s_centroids[c].valence, points[idx].valence);
+  }
+
+  __syncthreads();
+
+  // 3. Write ONE result per block (no atomics!)
+  int base = blockIdx.x * K;
+
+  for (int i = threadIdx.x; i < K; i += blockDim.x) {
+    block_counts[base + i] = s_counts[i];
+    block_centroids[base + i] = s_centroids[i];
+  }
+}
+
+__global__ void reduceCentroids(Point *block_centroids, int *block_counts,
+                                Point *centroid_temps, int *pointersPerCluster,
+                                int num_blocks, int K) {
+
+  int c = threadIdx.x + blockIdx.x * blockDim.x;
+  if (c >= K)
+    return;
+
+  Point sum = {};
+  sum.cluster = c;
+  int count = 0;
+
+  for (int b = 0; b < num_blocks; b++) {
+    int idx = b * K + c;
+
+    count += block_counts[idx];
+    sum.danceability += block_centroids[idx].danceability;
+    sum.energy += block_centroids[idx].energy;
+    sum.speechiness += block_centroids[idx].speechiness;
+    sum.acousticness += block_centroids[idx].acousticness;
+    sum.instrumentalness += block_centroids[idx].instrumentalness;
+    sum.liveliness += block_centroids[idx].liveliness;
+    sum.valence += block_centroids[idx].valence;
+  }
+
+  pointersPerCluster[c] = count;
+  centroid_temps[c] = sum;
+}
+
 __global__ void computeCentroidsGPU(Point *centroids, Point *centroid_temps,
                                     int *pointsPerCluster, int cluster_count) {
 
