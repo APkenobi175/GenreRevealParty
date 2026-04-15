@@ -48,10 +48,10 @@ void accumulateCentroids(Point *d_centroids, Point *d_centroid_temps,
       d_points, total_points, d_block_centroids, d_block_counts, cluster_count);
 
   checkCuda(cudaDeviceSynchronize());
-  // Use one warp to reduce each block, given we have small cluster counts
-  reduceCentroids<<<1, 32>>>(d_block_centroids, d_block_counts,
-                             d_centroid_temps, d_points_per_cluster, blocks,
-                             cluster_count);
+  // WARNING: Hardcoded Grid Dimension
+  reduceCentroids<<<1, cluster_count>>>(d_block_centroids, d_block_counts,
+                                        d_centroid_temps, d_points_per_cluster,
+                                        blocks, cluster_count);
 #endif
 
   checkCuda(cudaDeviceSynchronize());
