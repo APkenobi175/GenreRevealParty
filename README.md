@@ -1,6 +1,8 @@
 
 # Instructions for Running Code on Clusters
 
+- By Ammon Phipps, Dyland Green, and Eliza Haderlie
+
 ## Individual Implementation Instructions
 
 1. Navigate to ondemand.chpc.utah.edu
@@ -18,15 +20,16 @@
 
 4. At this point in the process you have 2 options
     1. Manually copy project files to the cluster
+        - Extract the project files, and move it into the home directory of the cluster using the file manager on the left hand side of the dashboard.
     2. Use git to clone the repository
 
-5. Clone the repository to your home directory:
+        - Clone the repository to your home directory:
 
-    ```bash
-    git clone git@github.com:APkenobi175/GenreRevealParty.git
-    ```
+            ```bash
+            git clone git@github.com:APkenobi175/GenreRevealParty.git
+            ```
 
-6. Download dataset from [here](https://www.kaggle.com/datasets/rodolfofigueroa/spotify-12m-songs?resource=download)
+5. Download dataset from [here](https://www.kaggle.com/datasets/rodolfofigueroa/spotify-12m-songs?resource=download)
 
     - On the dashboard of ondemand.chpc.utah.edu, click on the `files` tab in the top left menu, and select `Home Directory`
 
@@ -38,23 +41,23 @@
 
     - Unzip, and move `tracks_features.csv` to the `GenreRevealParty/data` directory.
 
-7. Back in the shell, Load the module for your desired implementation (e.g., OpenMP, CUDA, OpenMPI):
+6. Back in the shell, Load the module for your desired implementation (e.g., OpenMP, CUDA, OpenMPI):
     - Examples:
       - For CUDA:
             `module load cuda`
       - For OpenMPI:
             `module load openmpi`
 
-8. Request GPU nodes, and task allocation for running the program. Example for requesting 4 tasks and 2 GPUs:
+7. Request GPU nodes, and task allocation for running the program. Example for requesting 2 tasks and 2 GPUs:
 
     ```bash
-    srun --ntasks=4 --account=notchpeak-gpu --partition=notchpeak-gpu --gres=gpu:2 --pty bash
+    srun --ntasks=2 --account=notchpeak-gpu --partition=notchpeak-gpu --gres=gpu:2 --pty bash
     ```
 
-9. Navigate to the implementation directory and build the program using CMake
+8. Navigate to the implementation directory and build the program using CMake
 
     ```bash
-    cd GenreRevealParty/parallel_cuda
+    cd GenreRevealParty/(cuda_MPI, or OpenMP, or parallel_cuda, or OpenMPI)
     ```
 
     - Compile the program using CMake and then return to the implementation directory:
@@ -67,7 +70,7 @@
         cd ..
         ```
 
-10. Run the program
+9. Run the program
 
     - For non MPI implementations, you can run the program directly from the implementation directory using the following command:
 
