@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --account=notchpeak-gpu
 #SBATCH --partition=notchpeak-gpu
-#SBATCH --gres=gpu:1
+###### SBATCH --gres=gpu:1
 #SBATCH --time=00:10:00
 #SBATCH --job-name=runall
 #SBATCH --output=results.log
-#SBATCH --ntasks=1
-#SBATCH --nodelist=notch001
+####### #SBATCH --ntasks=1
+####### #SBATCH --nodelist=notch001
 
 module load cuda
 module load python
@@ -31,15 +31,20 @@ echo ""
 # mv output.csv serial_output.csv
 # cd ..
 
-# echo 'RUNNING OPEN MP IMPLEMENTATION'
-# cd ~/GenreRevealParty/OpenMP
-# mkdir -p build && cd build
-# cmake ..
-# make
-# cd ..
-# ./build/GenreRevealPartyOpenMP
-# mv output.csv openmp_output.csv
-# cd ..
+echo 'RUNNING OPEN MP IMPLEMENTATION'
+cd ~/GenreRevealParty/OpenMP
+mkdir -p build && cd build
+cmake ..
+make
+cd ..
+echo 'RUNNING OPEN MP IMPLEMENTATION with 2 THREADS'
+OMP_NUM_THREADS=2 ./build/GenreRevealPartyOpenMP
+echo 'RUNNING OPEN MP IMPLEMENTATION with 4 THREADS'
+OMP_NUM_THREADS=4 ./build/GenreRevealPartyOpenMP
+echo 'RUNNING OPEN MP IMPLEMENTATION with 8 THREADS'
+OMP_NUM_THREADS=8 ./build/GenreRevealPartyOpenMP
+mv output.csv openmp_output.csv
+cd ..
 # echo ""
 # echo 'RUNNING MPI IMPLEMENTATION with 4 THREADS'
 # echo ""
@@ -52,15 +57,15 @@ echo ""
 # mv output.csv mpi_output.csv
 # cd ..
 # echo ""
-echo 'RUNNING CUDA IMPLEMENTATION'
-echo ""
-cd ~/GenreRevealParty/parallel_cuda
-mkdir -p build && cd build
-cmake ..
-make
-cd ..
-./build/GenreRevealPartyCUDA
-mv output.csv cuda_output.csv
+# echo 'RUNNING CUDA IMPLEMENTATION'
+# echo ""
+# cd ~/GenreRevealParty/parallel_cuda
+# mkdir -p build && cd build
+# cmake ..
+# make
+# cd ..
+# ./build/GenreRevealPartyCUDA
+# mv output.csv cuda_output.csv
 
 # cd ..
 # echo ""

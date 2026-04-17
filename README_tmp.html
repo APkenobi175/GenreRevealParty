@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="instructions-for-running-code-on-clusters">Instructions for Running Code on Clusters</h1>
+<h2 id="individual-implementation-instructions">Individual Implementation Instructions</h2>
+<ol>
+<li>
+<p>Navigate to ondemand.chpc.utah.edu</p>
+<ul>
+<li>You can also use SSH to log in directly from your  terminal, Example:<pre class="hljs"><code><div>ssh username@kingspeak1.chpc.utah.edu
+</div></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>Log into your account and do the 2 factor authentication.</p>
+</li>
+<li>
+<p>In the top left corner cick ont he <code>clusters</code> drop down menu and select 'Notchpeak Shell Access'</p>
+ <img src="file:///home/phippsammon/GenreRevealParty/pictures/image.png">
+</li>
+<li>
+<p>At this point in the process you have 2 options</p>
+<ol>
+<li>Manually copy project files to the cluster</li>
+<li>Use git to clone the repository</li>
+</ol>
+</li>
+<li>
+<p>Clone the repository to your home directory:</p>
+<pre class="hljs"><code><div>git <span class="hljs-built_in">clone</span> git@github.com:APkenobi175/GenreRevealParty.git
+</div></code></pre>
+</li>
+<li>
+<p>Download dataset from <a href="https://www.kaggle.com/datasets/rodolfofigueroa/spotify-12m-songs?resource=download">here</a></p>
+<ul>
+<li>
+<p>On the dashboard of ondemand.chpc.utah.edu, click on the <code>files</code> tab in the top left menu, and select <code>Home Directory</code></p>
+</li>
+<li>
+<p>Navigate to <code>GenreRevealParty</code> directory</p>
+</li>
+<li>
+<p>Click on the <code>New Directory</code> button and create a new directory called <code>data</code></p>
+<img src="file:///home/phippsammon/GenreRevealParty/pictures/image2.png">
+</li>
+<li>
+<p>Unzip, and move <code>tracks_features.csv</code> to the <code>GenreRevealParty/data</code> directory.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Back in the shell, Load the module for your desired implementation (e.g., OpenMP, CUDA, OpenMPI):</p>
+<ul>
+<li>Examples:
+<ul>
+<li>For CUDA:
+<code>module load cuda</code></li>
+<li>For OpenMPI:
+<code>module load openmpi</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Request GPU nodes, and task allocation for running the program. Example for requesting 4 tasks and 2 GPUs:</p>
+<pre class="hljs"><code><div>srun --ntasks=4 --account=notchpeak-gpu --partition=notchpeak-gpu --gres=gpu:2 --pty bash
+</div></code></pre>
+</li>
+<li>
+<p>Navigate to the implementation directory and build the program using CMake</p>
+<pre class="hljs"><code><div><span class="hljs-built_in">cd</span> GenreRevealParty/parallel_cuda
+</div></code></pre>
+<ul>
+<li>
+<p>Compile the program using CMake and then return to the implementation directory:</p>
+<pre class="hljs"><code><div>mkdir build
+<span class="hljs-built_in">cd</span> build
+cmake ..
+make
+<span class="hljs-built_in">cd</span> ..
+</div></code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>Run the program</p>
+<ul>
+<li>
+<p>For non MPI implementations, you can run the program directly from the implementation directory using the following command:</p>
+<pre class="hljs"><code><div>./build/GenreRevealParty&lt;IMPLEMENTATIONTYPE&gt;
+</div></code></pre>
+</li>
+<li>
+<p>If you are using an MPI implemenation you can run the following commands from the implementation directory:</p>
+<ul>
+<li>OpenMPI</li>
+</ul>
+<pre class="hljs"><code><div>mpirun -np &lt;NUMBER_OF_PROCESSES&gt; ./build/GenreRevealPartyMPI
+</div></code></pre>
+<ul>
+<li>Cuda With MPI</li>
+</ul>
+<pre class="hljs"><code><div>mpirun -np &lt;NUMBER_OF_PROCESSES&gt; ./build/mpi-cuda
+</div></code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="running-all-implementations-at-once">Running All Implementations At Once</h2>
+<p>To run all implementations at once you can run the included sbatch script <code>runall.sh</code>. This will automatically request resources, and run all implementations. To run the script use the following command from any directory on notchpeak.</p>
+<pre class="hljs"><code><div>sbatch runall.sh
+</div></code></pre>
+<ul>
+<li>After submitting the job you will see a message like the following:</li>
+</ul>
+<pre class="hljs"><code><div>Submitted batch job 123456
+</div></code></pre>
+<ul>
+<li>You can check the status of the job using the following command:</li>
+</ul>
+<pre class="hljs"><code><div>squeue -u &lt;YOUR_USERNAME&gt;
+</div></code></pre>
+<ul>
+<li>When its complete you can find the output files in the <code>results.log</code> file in root directory of the project.</li>
+<li>You can view the output files using the <code>cat</code> command. Example:</li>
+</ul>
+<pre class="hljs"><code><div>cat results.log
+</div></code></pre>
+<h2 id="important-notes">Important Notes</h2>
+<ol>
+<li>
+<p>Always make sure to request a GPU node when running GPU implementations, otherwise your code will not run properly and may cause errors.</p>
+</li>
+<li>
+<p>always run the code from the implementation directory (e.g., <code>GenreRevealParty/parallel_cuda</code>) to ensure that the correct paths are used for data and other resources. E.G do not run from the build directory, as this may cause issues with finding the data file or other resources.</p>
+</li>
+<li>
+<p>Dataset is not stored in the repo and must be downlaoded separately due to its size. Make sure to place the <code>tracks_features.csv</code> file in the <code>GenreRevealParty/data</code> directory for the code to run properly.</p>
+</li>
+</ol>
+
+</body>
+</html>
